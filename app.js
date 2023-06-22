@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log('App listening on port 3000');
+  console.log(`App listening on port ${PORT}`);
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
