@@ -8,7 +8,7 @@ const getUsers = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Internal Server Error',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
       });
     });
@@ -18,11 +18,13 @@ const getUsersById = (req, res) => {
   userModel
     .findById(req.params.user_id)
     .then((user) => {
-      res.status(200).send(user);
+      if (!user) {
+        res.status(404).send({ message: 'Нет пользователя с таким id' });
+      } else res.send({ data: user });
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Internal Server Error',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
       });
     });
@@ -36,7 +38,7 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Internal Server Error',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
       });
     });
@@ -58,7 +60,7 @@ const renewUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       res.status(500).send({
-        message: 'Internal Server Error',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
       });
     });
@@ -80,7 +82,7 @@ const renewUserAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       res.status(500).send({
-        message: 'Internal Server Error',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
       });

@@ -8,7 +8,7 @@ const getCards = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Произошла ошибка',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
       });
@@ -25,7 +25,7 @@ const createCards = (req, res) => {
     // данные не записались, вернём ошибку
     .catch((err) => {
       res.status(500).send({
-        message: 'Произошла ошибка',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
       });
@@ -39,7 +39,7 @@ const deleteCards = (req, res) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       res.status(500).send({
-        message: 'Произошла ошибка',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
       });
@@ -56,7 +56,7 @@ const likeCard = (req, res) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       res.status(500).send({
-        message: 'Произошла ошибка',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
       });
@@ -74,7 +74,7 @@ const dislikeCard = (req, res) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       res.status(500).send({
-        message: 'Произошла ошибка',
+        message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
       });
