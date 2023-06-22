@@ -21,7 +21,7 @@ const createCards = (req, res) => {
   cardsModel
     .create({ name, link, owner: req.user._id })
     // вернём записанные в базу данные
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.status(200).send({ data: cards }))
     // данные не записались, вернём ошибку
     .catch((err) => {
       res.status(500).send({
