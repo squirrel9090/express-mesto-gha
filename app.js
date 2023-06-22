@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const cardsRouter = require('./routes/card');
 const usersRouter = require('./routes/users');
+const wrongRouter = require('./routes/wrong');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -24,3 +25,4 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/cards', cardsRouter);
 app.use('/users', usersRouter);
+app.use('/*', wrongRouter);
