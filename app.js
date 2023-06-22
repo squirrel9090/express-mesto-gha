@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const bodyParser = require('body-parser');
 const cardsRouter = require('./routes/card');
 const usersRouter = require('./routes/users');
 const wrongRouter = require('./routes/wrong');
@@ -21,6 +23,7 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/cards', cardsRouter);

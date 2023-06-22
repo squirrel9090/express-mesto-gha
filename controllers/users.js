@@ -57,7 +57,7 @@ const renewUser = (req, res) => {
         // eslint-disable-next-line comma-dangle
       }
     )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       res.status(500).send({
         message: `Возникла ошибка ${err.message}`,
