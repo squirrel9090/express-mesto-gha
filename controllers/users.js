@@ -37,7 +37,7 @@ const createUser = (req, res) => {
       res.status(201).send(user);
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(400).send({
         message: `Возникла ошибка ${err.message}`,
         err: err.message,
       });
