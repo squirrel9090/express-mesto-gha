@@ -35,10 +35,10 @@ const createCards = (req, res) => {
 
 const deleteCards = (req, res) => {
   cardsModel
-    .findByIdAndDelete(req.params.id)
+    .findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(400).send({ message: 'Нет карточки с таким id' });
+        res.status(404).send({ message: 'Нет карточки с таким id' });
       }
       res.send({ data: card });
     })
