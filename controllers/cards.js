@@ -35,8 +35,13 @@ const createCards = (req, res) => {
 
 const deleteCards = (req, res) => {
   cardsModel
-    .findByIdAndRemove(req.params.id)
-    .then((card) => res.send({ data: card }))
+    .findByIdAndDelete(req.params.id)
+    .then((card) => {
+      if (!card) {
+        res.status(400).send({ message: 'Нет карточки с таким id' });
+      }
+      res.send({ data: card });
+    })
     .catch((err) => {
       res.status(500).send({
         message: `Возникла ошибка ${err.message}`,
