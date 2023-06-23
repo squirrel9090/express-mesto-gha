@@ -19,7 +19,6 @@ const userSchema = new mongoose.Schema({
       validator: (v) => /https?:/.test(v),
       message: 'Не соотвествует формату ссылки',
     },
-
     required: true,
   },
 });

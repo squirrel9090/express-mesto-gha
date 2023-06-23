@@ -43,7 +43,7 @@ const deleteCards = (req, res) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(400).send({
         message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
