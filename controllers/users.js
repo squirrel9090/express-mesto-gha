@@ -16,17 +16,18 @@ const getUsers = (req, res) => {
 
 const getUsersById = (req, res) => {
   userModel
-    .findById(req.params.user_id)
+    .findById(req.params.id)
     .then((user) => {
       if (!user) {
-        res.status(400).send({ message: 'Нет пользователя с таким id' });
+        res.status(404).send({ message: 'Нет пользователя с таким id' });
       } else res.status(200).send({ data: user });
     })
-    .catch((err) => {
-      res.status(500).send({
-        message: `Возникла ошибка ${err.message}`,
-        err: err.message,
-      });
+    .catch((err, user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Нет пользователя с таким id' });
+      } else {
+        res.status(500).send({ message: `Возникла ошибка ${err.message}` });
+      }
     });
 };
 
