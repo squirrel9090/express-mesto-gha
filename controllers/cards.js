@@ -52,9 +52,7 @@ const deleteCards = (req, res) => {
           .status(STATUS_CODES.UNAUTHORIZED)
           .send({ message: 'Невозможно удалить чужую карточку' });
       } else {
-        cardsModel
-          .findByIdAndRemove(card)
-          .then(() => res.status(STATUS_CODES.OK).send({ data: card }));
+        res.status(STATUS_CODES.OK).send({ data: card });
       }
     })
     .catch((err) => {

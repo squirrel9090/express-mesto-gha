@@ -2,13 +2,13 @@
   "name": "express-mesto-gha",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
     "lint": "npx eslint ."
   },
-  "author": "",
+  "author": "Evgeniya Martirosyants",
   "license": "ISC",
   "devDependencies": {
     "eslint-config-airbnb-base": "^15.0.0",
@@ -19,7 +19,6 @@
     "body-parser": "^1.20.2",
     "celebrate": "^15.0.1",
     "express": "^4.18.2",
-    "http2": "^3.3.7",
     "mongoose": "^7.3.1",
     "validator": "^13.9.0"
   }
