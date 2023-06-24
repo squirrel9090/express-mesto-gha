@@ -69,7 +69,7 @@ const createCards = (req, res) => {
     });
 };*/
 
-deleteCard = (req, res) => {
+const deleteCards = (req, res) => {
   const { cardId } = req.params;
 
   if (!ObjectId.isValid(cardId)) {
