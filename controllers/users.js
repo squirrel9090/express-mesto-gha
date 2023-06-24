@@ -8,7 +8,7 @@ const getUsers = (req, res) => {
       res.send(users);
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
         message: `Возникла ошибка ${err.message}`,
         err: err.message,
       });
@@ -20,14 +20,20 @@ const getUsersById = (req, res) => {
     .findById(req.params.id)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Нет пользователя с таким id' });
-      } else res.status(200).send({ data: user });
+        res
+          .status(STATUS_CODES.NOT_FOUND)
+          .send({ message: 'Нет пользователя с таким id' });
+      } else res.status(STATUS_CODES.OK).send({ data: user });
     })
     .catch((err, user) => {
       if (!user) {
-        res.status(400).send({ message: 'Нет пользователя с таким id' });
+        res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .send({ message: 'Нет пользователя с таким id' });
       } else {
-        res.status(500).send({ message: `Возникла ошибка ${err.message}` });
+        res
+          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+          .send({ message: `Возникла ошибка ${err.message}` });
       }
     });
 };
@@ -40,12 +46,14 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
+        res.status(STATUS_CODES.BAD_REQUEST).send({
           message: `Возникла ошибка ${err.message}`,
           err: err.message,
         });
       } else {
-        res.status(500).send({ message: `Возникла ошибка ${err.message}` });
+        res
+          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+          .send({ message: `Возникла ошибка ${err.message}` });
       }
     });
 };
@@ -63,15 +71,17 @@ const renewUser = (req, res) => {
         // eslint-disable-next-line comma-dangle
       }
     )
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(STATUS_CODES.OK).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
+        res.status(STATUS_CODES.BAD_REQUEST).send({
           message: `Возникла ошибка ${err.message}`,
           err: err.message,
         });
       } else {
-        res.status(500).send({ message: `Возникла ошибка ${err.message}` });
+        res
+          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+          .send({ message: `Возникла ошибка ${err.message}` });
       }
     });
 };
@@ -92,12 +102,14 @@ const renewUserAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
+        res.status(STATUS_CODES.BAD_REQUEST).send({
           message: `Возникла ошибка ${err.message}`,
           err: err.message,
         });
       } else {
-        res.status(400).send({ message: `Возникла ошибка ${err.message}` });
+        res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .send({ message: `Возникла ошибка ${err.message}` });
       }
     });
 };
