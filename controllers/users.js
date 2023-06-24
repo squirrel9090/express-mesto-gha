@@ -58,16 +58,15 @@ const createUser = (req, res) => {
     });
 };
 const renewUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { name, about } = req.body;
 
   userModel
     .findByIdAndUpdate(
       req.params.id,
-      { name, about, avatar },
+      { name, about },
       {
         new: true,
         runValidators: true,
-        upsert: true,
         // eslint-disable-next-line comma-dangle
       }
     )
@@ -95,7 +94,6 @@ const renewUserAvatar = (req, res) => {
       {
         new: true,
         runValidators: true,
-        upsert: true,
         // eslint-disable-next-line comma-dangle
       }
     )
