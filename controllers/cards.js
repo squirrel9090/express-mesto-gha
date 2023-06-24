@@ -39,7 +39,7 @@ const createCards = (req, res) => {
 
 const deleteCards = (req, res) => {
   cardsModel
-    .findByIdAndRemove(req.params.cardId)
+    .findByIdAndRemove(req.params.id)
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Нет карточки с таким id' });
