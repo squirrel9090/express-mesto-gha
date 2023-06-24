@@ -25,8 +25,8 @@ const getUsersById = (req, res) => {
           .send({ message: 'Нет пользователя с таким id' });
       } else res.status(STATUS_CODES.OK).send({ data: user });
     })
-    .catch((err, user) => {
-      if (!user) {
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res
           .status(STATUS_CODES.BAD_REQUEST)
           .send({ message: 'Нет пользователя с таким id' });
