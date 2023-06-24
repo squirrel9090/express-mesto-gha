@@ -70,7 +70,9 @@ const likeCard = (req, res) => {
     )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Нет карточки с таким id' });
+        res
+          .status(404)
+          .send({ message: 'Карточка для добавления лайка не найдена' });
       }
       return res.send(card);
     })
@@ -91,7 +93,14 @@ const dislikeCard = (req, res) => {
       // eslint-disable-next-line comma-dangle
       { new: true }
     )
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (!card) {
+        res
+          .status(404)
+          .send({ message: 'Карточка для удаления лайка не найдена' });
+      }
+      return res.send(card);
+    })
     .catch((err) => {
       res.status(500).send({
         message: `Возникла ошибка ${err.message}`,
