@@ -31,7 +31,7 @@ const createCards = (req, res) => {
           err: err.message,
         });
       } else {
-        res.status(500).send({ message: `Возникла ошибка ${err.message}` });
+        res.status(400).send({ message: `Возникла ошибка ${err.message}` });
       }
     });
   //
