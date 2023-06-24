@@ -49,9 +49,11 @@ const deleteCards = (req, res) => {
         cardsModel
           .findByIdAndRemove(card)
           .then(() => res.status(200).send({ data: card }))
-          .catch(() =>
-            // eslint-disable-next-line comma-dangle, implicit-arrow-linebreak
-            res.status(500).send({ message: 'Что-то пошло не так' })
+          .catch(
+            () =>
+              // eslint-disable-next-line comma-dangle, implicit-arrow-linebreak
+              res.status(500).send({ message: 'Что-то пошло не так' })
+            // eslint-disable-next-line function-paren-newline
           );
       }
     })
@@ -66,7 +68,7 @@ const deleteCards = (req, res) => {
 const likeCard = (req, res) => {
   cardsModel
     .findByIdAndUpdate(
-      req.params.cardId,
+      req.params.id,
       { $addToSet: { likes: req.user._id } },
       // eslint-disable-next-line comma-dangle
       { new: true }
@@ -84,7 +86,7 @@ const likeCard = (req, res) => {
 const dislikeCard = (req, res) => {
   cardsModel
     .findByIdAndUpdate(
-      req.params.cardId,
+      req.params.id,
       { $pull: { likes: req.user._id } },
       // eslint-disable-next-line comma-dangle
       { new: true }
