@@ -48,21 +48,18 @@ const deleteCards = (req, res) => {
       } else {
         cardsModel
           .findByIdAndRemove(card)
-          .then(() => res.status(200).send({ data: card }))
-          .catch(() =>
-            // eslint-disable-next-line comma-dangle, implicit-arrow-linebreak
-            res.status(500).send({ message: 'Что-то пошло не так' })
-          );
+          .then(() => res.status(200).send({ data: card }));
       }
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(400).send({
         message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
       });
     });
 };
+
 const likeCard = (req, res) => {
   cardsModel
     .findByIdAndUpdate(
