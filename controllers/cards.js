@@ -25,11 +25,14 @@ const createCards = (req, res) => {
     .then((cards) => res.status(200).send({ data: cards }))
     // данные не записались, вернём ошибку
     .catch((err) => {
-      res.status(400).send({
-        message: `Возникла ошибка ${err.message}`,
-        err: err.message,
-        stack: err.stack,
-      });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: `Возникла ошибка ${err.message}`,
+          err: err.message,
+        });
+      } else {
+        res.status(500).send({ message: `Возникла ошибка ${err.message}` });
+      }
     });
   //
 };
