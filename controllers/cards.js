@@ -1,4 +1,5 @@
 const cardsModel = require('../models/card');
+const STATUS_CODES = require('../utils/constants');
 
 const getCards = (req, res) => {
   cardsModel
@@ -7,7 +8,7 @@ const getCards = (req, res) => {
       res.send({ data: cards });
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
         message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,
@@ -39,11 +40,19 @@ const deleteCards = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Нет карточки с таким id' });
+      } else if (card.owner.toString() !== req.user._id) {
+        res.status(401).send({ message: 'Невозможно удалить чужую карточку' });
+      } else {
+        cardsModel
+          .findByIdAndRemove(card)
+          .then(() => res.status(200).send({ data: card }))
+          .catch(() =>
+            res.status(500).send({ message: 'Что-то пошло не так' })
+          );
       }
-      res.send({ data: card });
     })
     .catch((err) => {
-      res.status(400).send({
+      res.status(500).send({
         message: `Возникла ошибка ${err.message}`,
         err: err.message,
         stack: err.stack,

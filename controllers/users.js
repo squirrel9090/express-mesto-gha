@@ -1,4 +1,5 @@
 const userModel = require('../models/users');
+const STATUS_CODES = require('../utils/constants');
 
 const getUsers = (req, res) => {
   userModel
@@ -35,13 +36,17 @@ const createUser = (req, res) => {
   userModel
     .create(req.body)
     .then((user) => {
-      res.status(201).send(user);
+      res.status(STATUS_CODES.CREATED).send(user);
     })
     .catch((err) => {
-      res.status(400).send({
-        message: `Возникла ошибка ${err.message}`,
-        err: err.message,
-      });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: `Возникла ошибка ${err.message}`,
+          err: err.message,
+        });
+      } else {
+        res.status(500).send({ message: `Возникла ошибка ${err.message}` });
+      }
     });
 };
 const renewUser = (req, res) => {
