@@ -56,11 +56,13 @@ const deleteCards = (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(STATUS_CODES.BAD_REQUEST).send({
-        message: `Возникла ошибка ${err.message}`,
-        err: err.message,
-        stack: err.stack,
-      });
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(STATUS_CODES.BAD_REQUEST).send({
+          message: `Возникла ошибка ${err.message}`,
+          err: err.message,
+          stack: err.stack,
+        });
+      }
     });
 };
 
@@ -81,11 +83,13 @@ const likeCard = (req, res) => {
       return res.send(card);
     })
     .catch((err) => {
-      res.status(STATUS_CODES.BAD_REQUEST).send({
-        message: `Возникла ошибка ${err.message}`,
-        err: err.message,
-        stack: err.stack,
-      });
+      if (err.name === 'CastError') {
+        res.status(STATUS_CODES.BAD_REQUEST).send({
+          message: `Возникла ошибка ${err.message}`,
+          err: err.message,
+          stack: err.stack,
+        });
+      }
     });
 };
 
@@ -106,11 +110,13 @@ const dislikeCard = (req, res) => {
       return res.send(card);
     })
     .catch((err) => {
-      res.status(STATUS_CODES.BAD_REQUEST).send({
-        message: `Возникла ошибка ${err.message}`,
-        err: err.message,
-        stack: err.stack,
-      });
+      if (err.name === 'CastError') {
+        res.status(STATUS_CODES.BAD_REQUEST).send({
+          message: `Возникла ошибка ${err.message}`,
+          err: err.message,
+          stack: err.stack,
+        });
+      }
     });
 };
 module.exports = {
