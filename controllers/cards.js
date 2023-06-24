@@ -1,8 +1,5 @@
-const mongoose = require('mongoose');
 const cardsModel = require('../models/card');
 const { STATUS_CODES } = require('../utils/constants');
-
-const { ObjectId } = mongoose.Types;
 
 const getCards = (req, res) => {
   cardsModel
@@ -40,24 +37,23 @@ const createCards = (req, res) => {
   //
 };
 
-/*const deleteCards = (req, res) => {
+const deleteCards = (req, res) => {
   cardsModel
     .findByIdAndRemove(req.params.id)
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Нет карточки с таким id' });
-      } else if (card.owner.toString() !== req.user._id) {
+      }
+      if (card.owner.toString() !== req.user._id) {
         res.status(401).send({ message: 'Невозможно удалить чужую карточку' });
-      } else {
-        cardsModel
-          .findByIdAndRemove(card)
-          .then(() => res.status(200).send({ data: card }))
-          .catch(
-            () =>
+      }
+          .catch((err) => {
+            if (err.name === 'CastError') {
               // eslint-disable-next-line comma-dangle, implicit-arrow-linebreak
-              res.status(500).send({ message: 'Что-то пошло не так' })
+              res.status(500).send({ message: 'Что-то пошло не так' });
+            }
             // eslint-disable-next-line function-paren-newline
-          );
+          });
       }
     })
     .catch((err) => {
@@ -67,34 +63,7 @@ const createCards = (req, res) => {
         stack: err.stack,
       });
     });
-};*/
-
-const deleteCards = (req, res) => {
-  const { cardId } = req.params;
-
-  if (!ObjectId.isValid(cardId)) {
-    res.status(400).send({ message: 'Невалидный id' });
-    return;
-  }
-  cardsModel
-    .findById(cardId)
-    .then((card) => {
-      if (!card) {
-        res.status(404).send({ message: 'Нет карточки с таким id' });
-      } else if (card.owner.toString() !== req.user._id) {
-        res.status(401).send({ message: 'Невозможно удалить чужую карточку' });
-      } else {
-        cardsModel
-          .findByIdAndRemove(cardId)
-          .then(() => res.status(200).send({ data: card }))
-          .catch(() =>
-            res.status(500).send({ message: 'Что-то пошло не так' })
-          );
-      }
-    })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
-
 const likeCard = (req, res) => {
   cardsModel
     .findByIdAndUpdate(
