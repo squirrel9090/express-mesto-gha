@@ -43,17 +43,16 @@ const deleteCards = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Нет карточки с таким id' });
-      }
-      if (card.owner.toString() !== req.user._id) {
+      } else if (card.owner.toString() !== req.user._id) {
         res.status(401).send({ message: 'Невозможно удалить чужую карточку' });
-      }
-          .catch((err) => {
-            if (err.name === 'CastError') {
-              // eslint-disable-next-line comma-dangle, implicit-arrow-linebreak
-              res.status(500).send({ message: 'Что-то пошло не так' });
-            }
-            // eslint-disable-next-line function-paren-newline
-          });
+      } else {
+        cardsModel
+          .findByIdAndRemove(card)
+          .then(() => res.status(200).send({ data: card }))
+          .catch(() =>
+            // eslint-disable-next-line comma-dangle, implicit-arrow-linebreak
+            res.status(500).send({ message: 'Что-то пошло не так' })
+          );
       }
     })
     .catch((err) => {
