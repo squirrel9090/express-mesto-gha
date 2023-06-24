@@ -1,5 +1,5 @@
 const cardsModel = require('../models/card');
-const STATUS_CODES = require('../utils/constants');
+const { STATUS_CODES } = require('../utils/constants');
 
 const getCards = (req, res) => {
   cardsModel
@@ -47,6 +47,7 @@ const deleteCards = (req, res) => {
           .findByIdAndRemove(card)
           .then(() => res.status(200).send({ data: card }))
           .catch(() =>
+            // eslint-disable-next-line comma-dangle, implicit-arrow-linebreak
             res.status(500).send({ message: 'Что-то пошло не так' })
           );
       }

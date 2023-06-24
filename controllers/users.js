@@ -25,7 +25,7 @@ const getUsersById = (req, res) => {
     })
     .catch((err, user) => {
       if (!user) {
-        res.status(404).send({ message: 'Нет пользователя с таким id' });
+        res.status(400).send({ message: 'Нет пользователя с таким id' });
       } else {
         res.status(500).send({ message: `Возникла ошибка ${err.message}` });
       }
