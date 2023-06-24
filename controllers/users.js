@@ -62,7 +62,7 @@ const renewUser = (req, res) => {
 
   userModel
     .findByIdAndUpdate(
-      req.params.id,
+      req.user._id,
       { name, about },
       {
         new: true,
@@ -89,7 +89,7 @@ const renewUserAvatar = (req, res) => {
 
   userModel
     .findByIdAndUpdate(
-      req.params.id,
+      req.user._id,
       { avatar },
       {
         new: true,
