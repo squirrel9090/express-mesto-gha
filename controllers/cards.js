@@ -68,7 +68,12 @@ const likeCard = (req, res) => {
       // eslint-disable-next-line comma-dangle
       { new: true }
     )
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Нет карточки с таким id' });
+      }
+      return res.send(card);
+    })
     .catch((err) => {
       res.status(400).send({
         message: `Возникла ошибка ${err.message}`,
