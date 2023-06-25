@@ -77,7 +77,7 @@ const likeCard = (req, res) => {
     .findByIdAndUpdate(
       req.params.id,
       { $addToSet: { likes: req.user._id } },
-      { new: true }
+      { new: true },
     )
     .then((card) => {
       if (!card) {
@@ -103,8 +103,7 @@ const dislikeCard = (req, res) => {
     .findByIdAndUpdate(
       req.params.id,
       { $pull: { likes: req.user._id } },
-      // eslint-disable-next-line comma-dangle
-      { new: true }
+      { new: true },
     )
     .then((card) => {
       if (!card) {

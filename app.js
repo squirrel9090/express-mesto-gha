@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const bodyParser = require('body-parser');
 const cardsRouter = require('./routes/card');
 const usersRouter = require('./routes/users');
@@ -19,9 +18,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT);
 
 app.use('/cards', cardsRouter);
 app.use('/users', usersRouter);
