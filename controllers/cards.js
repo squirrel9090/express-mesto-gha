@@ -56,8 +56,14 @@ const deleteCards = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         res.status(STATUS_CODES.BAD_REQUEST).send({
+          message: `Возникла ошибка ${err.message}`,
+          err: err.message,
+          stack: err.stack,
+        });
+      } else {
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
           message: `Возникла ошибка ${err.message}`,
           err: err.message,
           stack: err.stack,
@@ -71,7 +77,6 @@ const likeCard = (req, res) => {
     .findByIdAndUpdate(
       req.params.id,
       { $addToSet: { likes: req.user._id } },
-      // eslint-disable-next-line comma-dangle
       { new: true }
     )
     .then((card) => {
