@@ -32,7 +32,7 @@ const createCards = (req, res) => {
         });
       } else {
         res
-          .status(STATUS_CODES.BAD_REQUEST)
+          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
           .send({ message: `Возникла ошибка ${err.message}` });
       }
     });
