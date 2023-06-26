@@ -1,5 +1,5 @@
-const cardsModel = require('../models/card');
 const { STATUS_CODES } = require('../utils/constants');
+const cardsModel = require('../models/card');
 
 const getCards = (req, res) => {
   cardsModel
@@ -94,6 +94,12 @@ const likeCard = (req, res) => {
           err: err.message,
           stack: err.stack,
         });
+      } else {
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
+          message: `Возникла ошибка ${err.message}`,
+          err: err.message,
+          stack: err.stack,
+        });
       }
     });
 };
@@ -116,6 +122,12 @@ const dislikeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(STATUS_CODES.BAD_REQUEST).send({
+          message: `Возникла ошибка ${err.message}`,
+          err: err.message,
+          stack: err.stack,
+        });
+      } else {
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
           message: `Возникла ошибка ${err.message}`,
           err: err.message,
           stack: err.stack,

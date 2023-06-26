@@ -67,8 +67,7 @@ const renewUser = (req, res) => {
       {
         new: true,
         runValidators: true,
-        // eslint-disable-next-line comma-dangle
-      }
+      },
     )
     .then((user) => res.status(STATUS_CODES.OK).send({ data: user }))
     .catch((err) => {
@@ -94,8 +93,7 @@ const renewUserAvatar = (req, res) => {
       {
         new: true,
         runValidators: true,
-        // eslint-disable-next-line comma-dangle
-      }
+      },
     )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
@@ -106,7 +104,7 @@ const renewUserAvatar = (req, res) => {
         });
       } else {
         res
-          .status(STATUS_CODES.BAD_REQUEST)
+          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
           .send({ message: `Возникла ошибка ${err.message}` });
       }
     });
