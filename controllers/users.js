@@ -1,5 +1,7 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const userModel = require('../models/users');
-const { STATUS_CODES } = require('../utils/constants');
+const { STATUS_CODES, MONGO_DUPLICATE_KEY_ERROR } = require('../utils/constants');
 
 const getUsers = (req, res) => {
   userModel
@@ -39,16 +41,36 @@ const getUsersById = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  userModel
-    .create(req.body)
-    .then((user) => {
-      res.status(STATUS_CODES.CREATED).send(user);
-    })
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10).then((hash) => userModel
+    .create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then(() => res.status(STATUS_CODES.CREATED).send({
+      data: {
+        name,
+        about,
+        avatar,
+        email,
+      },
+    }))
     .catch((err) => {
+      if (err.code === MONGO_DUPLICATE_KEY_ERROR) {
+        res.status(STATUS_CODES.CONFLICT).send({
+          message: `Пользователь с почтой ${email} уже существует `,
+          err: err.message,
+          stack: err.stack,
+        });
+        return;
+      }
       if (err.name === 'ValidationError') {
+        console.log(err);
         res.status(STATUS_CODES.BAD_REQUEST).send({
           message: `Возникла ошибка ${err.message}`,
           err: err.message,
+          stack: err.stack,
         });
       } else {
         res
@@ -57,6 +79,18 @@ const createUser = (req, res) => {
       }
     });
 };
+
+const loginUser = (req, res, next) => {
+  const { email, password } = req.body;
+
+  userModel.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      res.send({ _id: token });
+    })
+    .catch((next));
+};
+
 const renewUser = (req, res) => {
   const { name, about } = req.body;
 
@@ -116,4 +150,5 @@ module.exports = {
   createUser,
   renewUser,
   renewUserAvatar,
+  loginUser,
 };
