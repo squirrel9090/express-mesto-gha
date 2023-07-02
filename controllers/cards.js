@@ -1,5 +1,8 @@
 const { STATUS_CODES } = require('../utils/constants');
 const cardsModel = require('../models/card');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const BadRequestError = require('../errors/BadRequestError');
 
 const getCards = (req, res) => {
   cardsModel
@@ -39,36 +42,23 @@ const createCards = (req, res) => {
   //
 };
 
-const deleteCards = (req, res) => {
+const deleteCards = (req, res, next) => {
   cardsModel
     .findByIdAndRemove(req.params.id)
     .then((card) => {
       if (!card) {
-        res
-          .status(STATUS_CODES.NOT_FOUND)
-          .send({ message: 'Нет карточки с таким id' });
+        throw new NotFoundError('Нет карточки с таким id');
       } else if (card.owner.toString() !== req.user._id) {
-        res
-          .status(STATUS_CODES.UNAUTHORIZED)
-          .send({ message: 'Невозможно удалить чужую карточку' });
+        throw new ForbiddenError('Невозможно удалить чужую карточку');
       } else {
         res.status(STATUS_CODES.OK).send({ data: card });
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(STATUS_CODES.BAD_REQUEST).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-          stack: err.stack,
-        });
-      } else {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-          stack: err.stack,
-        });
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return next(new BadRequestError('Введены некорректные данные'));
       }
+      return next(err);
     });
 };
 
