@@ -9,12 +9,12 @@ const cardSchema = new mongoose.Schema({
     required: true,
   },
   link: {
-    required: true,
+    type: String,
     validate: {
       validator: (url) => validator.isURL(url),
       message: 'Не соотвествует формату ссылки',
     },
-    type: String,
+    required: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
