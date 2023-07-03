@@ -8,7 +8,7 @@ usersRouter.post('/signin', usersController.loginUser);
 usersRouter.get('/', usersController.getUsers);
 
 usersRouter.get('/:id', getUserByIdJoi, usersController.getUsersById);
-
+usersRouter.get('/me', usersController.findCurrentUser);
 usersRouter.patch('/me', updateUserJoi, usersController.renewUser);
 usersRouter.patch('/me/avatar', updateAvatarJoi, usersController.renewUserAvatar);
 

@@ -2,41 +2,31 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/users');
 const { STATUS_CODES, MONGO_DUPLICATE_KEY_ERROR } = require('../utils/constants');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   userModel
     .find({})
     .then((users) => {
       res.send(users);
     })
-    .catch((err) => {
-      res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
-        message: `Возникла ошибка ${err.message}`,
-        err: err.message,
-      });
-    });
+    .catch(next);
 };
 
-const getUsersById = (req, res) => {
+const getUsersById = (req, res, next) => {
   userModel
     .findById(req.params.id)
     .then((user) => {
       if (!user) {
-        res
-          .status(STATUS_CODES.NOT_FOUND)
-          .send({ message: 'Нет пользователя с таким id' });
+        throw new NotFoundError('Пользователь не найден');
       } else res.status(STATUS_CODES.OK).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res
-          .status(STATUS_CODES.BAD_REQUEST)
-          .send({ message: 'Нет пользователя с таким id' });
-      } else {
-        res
-          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-          .send({ message: `Возникла ошибка ${err.message}` });
+        return next(new BadRequestError('Введены некорректные данные поиска'));
       }
+      return next(err);
     });
 };
 
@@ -89,6 +79,23 @@ const loginUser = (req, res, next) => {
       res.send({ _id: token });
     })
     .catch((next));
+};
+
+const findCurrentUser = (req, res, next) => {
+  userModel.findById(req.user._id)
+    .then((user) => {
+      if (user) {
+        res.status(STATUS_CODES.OK).send({ data: user });
+      } else {
+        next(new NotFoundError('Пользователь не найден'));
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return next(new BadRequestError('Введены некорректные данные поиска'));
+      }
+      return next(err);
+    });
 };
 
 const renewUser = (req, res) => {
@@ -151,4 +158,5 @@ module.exports = {
   renewUser,
   renewUserAvatar,
   loginUser,
+  findCurrentUser,
 };

@@ -21,6 +21,7 @@ app.post('/signin', loginJoi, loginUser);
 app.post('/signup', createUserJoi, createUser);
 
 app.use(auth);
+app.use(router);
 app.use(errors());
 
 app.use((err, req, res, next) => {
@@ -35,24 +36,5 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// eslint-disable-next-line consistent-return
-/*app.use((req, res, next) => {
-  console.log(req.headers);
-  if (!req.headers.authorization) {
-    return res.status(STATUS_CODES.UNAUTHORIZED).send({ message: 'Пользователь не авторизован' });
-  }
-
-  const token = req.headers.authorization.replace('Bearer ', '');
-  let payload;
-  try {
-    payload = jwt.verify(token, 'some-secret-key');
-  } catch (err) {
-    throw new UnauthorizedError('Необходима авторизация');
-  }
-  req.user = payload;
-  next();
-});*/
-
 app.listen(PORT);
 
-app.use(router);
