@@ -16,7 +16,7 @@ const getUsers = (req, res, next) => {
 
 const getUsersById = (req, res, next) => {
   userModel
-    .findById(req.params.id)
+    .findById(req.params.userId)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
@@ -85,7 +85,7 @@ const findCurrentUser = (req, res, next) => {
   userModel.findById(req.user._id)
     .then((user) => {
       if (user) {
-        res.status(STATUS_CODES.OK).send({ data: user });
+        res.status(STATUS_CODES.OK).send(user);
       } else {
         next(new NotFoundError('Пользователь не найден'));
       }
