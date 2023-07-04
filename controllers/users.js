@@ -4,7 +4,7 @@ const userModel = require('../models/users');
 const { STATUS_CODES, MONGO_DUPLICATE_KEY_ERROR } = require('../utils/constants');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const ConflictError = require('../errors/NotFoundError');
+const ConflictError = require('../errors/ConflictError');
 
 const getUsers = (req, res, next) => {
   userModel
