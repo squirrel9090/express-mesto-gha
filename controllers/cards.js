@@ -4,22 +4,16 @@ const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const BadRequestError = require('../errors/BadRequestError');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   cardsModel
     .find({})
     .then((cards) => {
       res.send({ data: cards });
     })
-    .catch((err) => {
-      res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
-        message: `Возникла ошибка ${err.message}`,
-        err: err.message,
-        stack: err.stack,
-      });
-    });
+    .catch((err) => next(err));
 };
 
-const createCards = (req, res) => {
+const createCards = (req, res, next) => {
   const { name, link } = req.body;
 
   cardsModel
@@ -29,15 +23,9 @@ const createCards = (req, res) => {
     // данные не записались, вернём ошибку
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(STATUS_CODES.BAD_REQUEST).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-        });
-      } else {
-        res
-          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-          .send({ message: `Возникла ошибка ${err.message}` });
+        return next(new BadRequestError(`Возникла ошибка ${err.message}`));
       }
+      return next(err);
     });
   //
 };
@@ -62,7 +50,7 @@ const deleteCards = (req, res, next) => {
     });
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   cardsModel
     .findByIdAndUpdate(
       req.params.cardId,
@@ -71,30 +59,19 @@ const likeCard = (req, res) => {
     )
     .then((card) => {
       if (!card) {
-        res
-          .status(STATUS_CODES.NOT_FOUND)
-          .send({ message: 'Карточка для добавления лайка не найдена' });
+        next(new NotFoundError('Карточка для добавления лайка не найдена'));
       }
       return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(STATUS_CODES.BAD_REQUEST).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-          stack: err.stack,
-        });
-      } else {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-          stack: err.stack,
-        });
+        return next(new BadRequestError(`Возникла ошибка ${err.message}`));
       }
+      return next(err);
     });
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   cardsModel
     .findByIdAndUpdate(
       req.params.cardId,
@@ -111,18 +88,9 @@ const dislikeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(STATUS_CODES.BAD_REQUEST).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-          stack: err.stack,
-        });
-      } else {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-          stack: err.stack,
-        });
+        return next(new BadRequestError(`Возникла ошибка ${err.message}`));
       }
+      return next(err);
     });
 };
 module.exports = {
