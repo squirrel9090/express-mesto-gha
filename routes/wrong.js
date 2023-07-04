@@ -1,10 +1,8 @@
 const wrongRouter = require('express').Router();
-const { STATUS_CODES } = require('../utils/constants');
+const NotFoundError = require('../errors/NotFoundError');
 
-wrongRouter.use((req, res) => {
-  res
-    .status(STATUS_CODES.NOT_FOUND)
-    .send({ message: 'Запрашиваемый ресурс не найден' });
+wrongRouter.use((req, res, next) => {
+  next(new NotFoundError('Маршрут не найден'));
 });
 
 module.exports = wrongRouter;

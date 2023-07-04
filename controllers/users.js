@@ -4,6 +4,7 @@ const userModel = require('../models/users');
 const { STATUS_CODES, MONGO_DUPLICATE_KEY_ERROR } = require('../utils/constants');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
+const ConflictError = require('../errors/NotFoundError');
 
 const getUsers = (req, res, next) => {
   userModel
@@ -30,7 +31,7 @@ const getUsersById = (req, res, next) => {
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -48,25 +49,12 @@ const createUser = (req, res) => {
     }))
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_KEY_ERROR) {
-        res.status(STATUS_CODES.CONFLICT).send({
-          message: `Пользователь с почтой ${email} уже существует `,
-          err: err.message,
-          stack: err.stack,
-        });
-        return;
+        return next(new ConflictError(`Пользователь с почтой ${email} уже существует `));
       }
       if (err.name === 'ValidationError') {
-        console.log(err);
-        res.status(STATUS_CODES.BAD_REQUEST).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-          stack: err.stack,
-        });
-      } else {
-        res
-          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-          .send({ message: `Возникла ошибка ${err.message}` });
+        return next(new BadRequestError(`Возникла ошибка ${err.message}`));
       }
+      return next(err);
     });
 };
 
@@ -98,7 +86,7 @@ const findCurrentUser = (req, res, next) => {
     });
 };
 
-const renewUser = (req, res) => {
+const renewUser = (req, res, next) => {
   const { name, about } = req.body;
 
   userModel
@@ -113,18 +101,12 @@ const renewUser = (req, res) => {
     .then((user) => res.status(STATUS_CODES.OK).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(STATUS_CODES.BAD_REQUEST).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-        });
-      } else {
-        res
-          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-          .send({ message: `Возникла ошибка ${err.message}` });
+        return next(new BadRequestError(`Возникла ошибка ${err.message}`));
       }
+      return next(err);
     });
 };
-const renewUserAvatar = (req, res) => {
+const renewUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   userModel
@@ -139,15 +121,8 @@ const renewUserAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(STATUS_CODES.BAD_REQUEST).send({
-          message: `Возникла ошибка ${err.message}`,
-          err: err.message,
-        });
-      } else {
-        res
-          .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-          .send({ message: `Возникла ошибка ${err.message}` });
-      }
+        return next(new BadRequestError(`Возникла ошибка ${err.message}`));
+      } return next(err);
     });
 };
 
