@@ -1,13 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
-const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const auth = require('./middlewares/auth');
 const { createUserJoi, loginJoi } = require('./middlewares/validation');
-const UnauthorizedError = require('./errors/UnauthorizedError');
 const { createUser, loginUser } = require('./controllers/users');
-const { STATUS_CODES } = require('./utils/constants');
 const router = require('./routes/router');
 
 const { PORT = 3000 } = process.env;
@@ -37,4 +34,3 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT);
-
