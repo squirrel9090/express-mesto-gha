@@ -59,9 +59,9 @@ const likeCard = (req, res, next) => {
     )
     .then((card) => {
       if (!card) {
-        next(new NotFoundError('Карточка для добавления лайка не найдена'));
+        return next(new NotFoundError('Карточка не найдена'));
       }
-      return res.send(card);
+      return res.status(STATUS_CODES.OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -80,9 +80,7 @@ const dislikeCard = (req, res, next) => {
     )
     .then((card) => {
       if (!card) {
-        res
-          .status(STATUS_CODES.NOT_FOUND)
-          .send({ message: 'Карточка для удаления лайка не найдена' });
+        return next(new NotFoundError('Карточка для удаления лайка не найдена'));
       }
       return res.send(card);
     })
@@ -93,6 +91,7 @@ const dislikeCard = (req, res, next) => {
       return next(err);
     });
 };
+
 module.exports = {
   getCards,
   createCards,
